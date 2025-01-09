@@ -2,3 +2,5 @@ requests
 argparse
 solders
 solana
+pandas
+flask

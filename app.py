@@ -7,6 +7,14 @@ from datetime import datetime, timedelta
 from solders.transaction import VersionedTransaction
 from solders.keypair import Keypair
 from solders.pubkey import Pubkey
+from flask import Flask
+
+# Flask app for health check
+app = Flask(__name__)
+
+@app.route('/ping', methods=['GET'])
+def ping():
+    return "Pong!", 200
 
 # Mantener las configuraciones originales
 RAYDIUM_API_URL = "https://api.raydium.io"
@@ -95,7 +103,7 @@ def parse_arguments():
     parser.add_argument("--loss", type=float, default=60.0, help="Loss percentage to sell (default: 60%)")
     return parser.parse_args()
 
-def main():
+def main_bot():
     """Main entry point for the simulator"""
     args = parse_arguments()
     wallet = SimulatedWallet(100)  # Start with $100 USD
@@ -156,4 +164,8 @@ def main():
         save_results(wallet.transactions)
 
 if __name__ == "__main__":
-    main()
+    import threading
+    # Run bot and Flask server in parallel
+    bot_thread = threading.Thread(target=main_bot, daemon=True)
+    bot_thread.start()
+    app.run(host="0.0.0.0", port=5000)

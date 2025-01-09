@@ -1,14 +1,25 @@
-# Usa una imagen base oficial de Python
+# Base image
 FROM python:3.9-slim
 
-# Establece el directorio de trabajo dentro del contenedor
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+
+# Install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create working directory
 WORKDIR /app
 
-# Copia los archivos del proyecto al contenedor
-COPY . .
+# Copy files
+COPY . /app
 
-# Instala las dependencias necesarias
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Comando por defecto para ejecutar tu script
-CMD ["python", "main.py"]
+# Expose the port for Flask
+EXPOSE 5000
+
+# Command to run the application
+CMD ["python", "bot.py"]
