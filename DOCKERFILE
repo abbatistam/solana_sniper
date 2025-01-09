@@ -1,25 +1,17 @@
-# Base image
-FROM python:3.9-slim
+# Usamos una imagen base con Python
+FROM python:3.10-slim
 
-# Set environment variables
-ENV PYTHONUNBUFFERED=1
-
-# Install dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
-
-# Create working directory
+# Establecer el directorio de trabajo
 WORKDIR /app
 
-# Copy files
+# Copiar los archivos de la app al contenedor
 COPY . /app
 
-# Install Python dependencies
+# Instalar las dependencias necesarias
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose the port for Flask
+# Exponer el puerto que usará Flask (5000)
 EXPOSE 5000
 
-# Command to run the application
-CMD ["python", "bot.py"]
+# Comando para ejecutar la app con Gunicorn
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]

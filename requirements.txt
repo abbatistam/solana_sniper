@@ -1,6 +1,7 @@
+flask
 requests
 argparse
+pandas
 solders
 solana
-pandas
-flask
+gunicorn
